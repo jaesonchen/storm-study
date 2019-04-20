@@ -16,7 +16,7 @@ public class DRPCClientTest {
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
         //3772是drpc对外默认的服务端口
-        try (DRPCClient client = new DRPCClient(conf, "localhost",3772)) {
+        try (DRPCClient client = new DRPCClient(conf, "localhost", 3772)) {
             System.out.println("DRPC result:" + client.execute("words", "the man storm"));
         }
     }

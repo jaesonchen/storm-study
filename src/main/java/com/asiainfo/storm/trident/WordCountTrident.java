@@ -14,6 +14,8 @@ import org.apache.storm.trident.operation.builtin.Sum;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
+import com.asiainfo.storm.util.FixedBatchSpout;
+import com.asiainfo.storm.util.MemoryMapState;
 import com.asiainfo.storm.util.ServiceUtil;
 
 /**   

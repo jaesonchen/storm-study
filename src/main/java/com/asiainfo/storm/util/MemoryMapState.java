@@ -1,4 +1,4 @@
-package com.asiainfo.storm.trident;
+package com.asiainfo.storm.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
