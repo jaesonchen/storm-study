@@ -27,7 +27,7 @@ import org.apache.storm.tuple.Values;
 import com.google.common.collect.Lists;
 
 /**   
- * @Description: redis 查找
+ * @Description: redis lookup 适用于 String、List、Set、SortedSet、Hash
  * 
  * @author chenzq  
  * @date 2019年4月20日 下午10:21:32
@@ -85,19 +85,25 @@ public class RedisLookupTopology {
 
         @Override
         public void execute(Tuple input) {
-            String wordName = input.getStringByField("wordName");
-            String countStr = input.getStringByField("count");
-
-            int count = 0;
-            // print lookup result with low probability
-            if (RANDOM.nextInt(100) > 90) {
-                if (countStr != null) {
-                    count = Integer.parseInt(countStr);
+            
+            try {
+                String wordName = input.getStringByField("wordName");
+                String countStr = input.getStringByField("count");
+    
+                int count = 0;
+                // print lookup result with low probability
+                if (RANDOM.nextInt(100) > 90) {
+                    if (countStr != null) {
+                        count = Integer.parseInt(countStr);
+                    }
+                    System.out.printf("Lookup result - word : %s / %d : ", wordName, count);
+                    System.out.println();
                 }
-                System.out.printf("Lookup result - word : %s / %d : ", wordName, count);
-                System.out.println();
+                collector.ack(input);
+            } catch (Exception ex) {
+                // ignore
+                collector.fail(input);
             }
-            collector.ack(input);
         }
 
         @Override
@@ -118,9 +124,9 @@ public class RedisLookupTopology {
 
         @Override
         public List<Values> toTuple(ITuple input, Object value) {
-            String member = getKeyFromTuple(input);
+            String key = getKeyFromTuple(input);
             List<Values> values = Lists.newArrayList();
-            values.add(new Values(member, value));
+            values.add(new Values(key, value));
             return values;
         }
 

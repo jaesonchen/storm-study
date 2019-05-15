@@ -20,7 +20,7 @@ import com.google.common.collect.Maps;
  * @Copyright: Copyright(c) 2019 jaesonchen.com Inc. All rights reserved. 
  */
 @SuppressWarnings("serial")
-public class WordCounter extends BaseBasicBolt {
+public class WordCountBolt extends BaseBasicBolt {
 
     private Map<String, Integer> wordCounter = Maps.newHashMap();
     

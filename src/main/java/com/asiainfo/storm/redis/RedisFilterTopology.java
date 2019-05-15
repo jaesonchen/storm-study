@@ -19,7 +19,7 @@ import org.apache.storm.tuple.ITuple;
 import org.apache.storm.tuple.Tuple;
 
 /**   
- * @Description: redis filter
+ * @Description: redis filter 适用于 String、Set、SortedSet、Hash
  * 
  * @author chenzq  
  * @date 2019年4月20日 下午10:34:12
@@ -39,7 +39,7 @@ public class RedisFilterTopology {
         WordSpout spout = new WordSpout();
         RedisFilterMapper filterMapper = new WhitelistWordFilterMapper();
         RedisFilterBolt whitelistBolt = new RedisFilterBolt(poolConfig, filterMapper);
-        WordCounter wordCounterBolt = new WordCounter();
+        WordCountBolt wordCounterBolt = new WordCountBolt();
         PrintWordTotalCountBolt printBolt = new PrintWordTotalCountBolt();
 
         TopologyBuilder builder = new TopologyBuilder();
@@ -67,19 +67,24 @@ public class RedisFilterTopology {
 
         @Override
         public void execute(Tuple input) {
-            String word = input.getStringByField("word");
-            String countStr = input.getStringByField("count");
-
-            // print lookup result with low probability
-            if (RANDOM.nextInt(100) > 90) {
-                int count = 0;
-                if (countStr != null) {
-                    count = Integer.parseInt(countStr);
+            try {
+                String word = input.getStringByField("word");
+                String countStr = input.getStringByField("count");
+    
+                // print lookup result with low probability
+                if (RANDOM.nextInt(100) > 90) {
+                    int count = 0;
+                    if (countStr != null) {
+                        count = Integer.parseInt(countStr);
+                    }
+                    System.out.printf("Lookup result - word : %s / %d : ", word, count);
+                    System.out.println();
                 }
-                System.out.printf("Lookup result - word : %s / %d : ", word, count);
-                System.out.println();
+                collector.ack(input);
+            } catch (Exception ex) {
+                // ignore
+                collector.fail(input);
             }
-            collector.ack(input);
         }
 
         @Override

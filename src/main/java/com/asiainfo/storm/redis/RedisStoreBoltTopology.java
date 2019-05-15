@@ -11,7 +11,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.ITuple;
 
 /**   
- * @Description: redis store
+ * @Description: redis store 适用于 String、List、Set、SortedSet、Hash
  * 
  * @author chenzq  
  * @date 2019年4月20日 下午10:46:07
@@ -29,7 +29,7 @@ public class RedisStoreBoltTopology {
                 .setHost(REDIS_HOST).setPort(REDIS_PORT).build();
         
         WordSpout spout = new WordSpout();
-        WordCounter bolt = new WordCounter();
+        WordCountBolt bolt = new WordCountBolt();
         RedisStoreMapper storeMapper = new WordCountStoreMapper();
         RedisStoreBolt storeBolt = new RedisStoreBolt(poolConfig, storeMapper);
 

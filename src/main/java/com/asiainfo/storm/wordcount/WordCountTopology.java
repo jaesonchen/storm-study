@@ -24,6 +24,17 @@ import com.asiainfo.storm.util.ServiceUtil;
 /**   
  * @Description: WordCount Topology实例，使用IRichBolt接口，需要自己anchor 新元组，自己调用ack/fail
  * 
+ *               Topology并行度
+ *               storm默认启动一个worker/slot 来运行一个topology，每个组件启动一个executor，每个executor运行一个task，再加上一个acker线程。
+ *               
+ *               Config.setNumWorkers(3) 用于设置启动的worker/slot。
+ *               builder.setSpout("spout", 2) / builder.setBolt("bolt", 2) 用于设置运行组件的Executor数量（如果在设置 bolt 的时候不指定 task 的数量，那么每个 executor 的 task 数会默认设置为 1）。
+ *               builder.setBolt("bolt", new Bolt()).setNumTasks(4) 用于设置每个组件需要的执行Task实例总数。
+ *               
+ *               Topology 任务分配时有两种情况：
+ *               task数目比worker多，那么会按worker的顺序轮流分配。
+ *               task数目比worker少，那么首先会将woker排序，将不同host间隔排列，保证task不会全部分配到同一个机器上。
+ * 
  * @author chenzq  
  * @date 2019年4月18日 下午2:23:54
  * @version V1.0
